@@ -6,8 +6,9 @@ using TMPro;
 public class Board : MonoBehaviour
 {
     bool[,] board;
-    const int columns = 10;
-    const int rows = 21;
+    public const int columns = 10;
+    public const int rows = 23; // 2 invis rows for spawn
+    public const int fieldRows = rows - 2;
 
     int score;
 
@@ -15,6 +16,7 @@ public class Board : MonoBehaviour
 
     static Vector2 blockSize;
     Vector2 fieldWorldSpaceSize;
+    Vector2 fieldBotLeft;
 
     Tetromino previewTetromino;
 
@@ -25,7 +27,7 @@ public class Board : MonoBehaviour
 
     private void Awake()
     {
-        board = new bool[rows + 2, columns];
+        board = new bool[columns , rows];
 
         BoxCollider2D fieldBox = GetComponent<BoxCollider2D>();
 
@@ -34,27 +36,25 @@ public class Board : MonoBehaviour
 #endif
         {
             fieldWorldSpaceSize = new Vector2(fieldBox.size.x * transform.lossyScale.x, fieldBox.size.y * transform.lossyScale.y);
-            blockSize = new Vector2(fieldWorldSpaceSize.x / columns, fieldWorldSpaceSize.y / rows);
-        }
-    }
+            blockSize = new Vector2(fieldWorldSpaceSize.x / columns, fieldWorldSpaceSize.y / (rows - 2)); //top 2 rows not in fieldSpace
 
-    public bool CheckFieldTaken(Vector2Int field)
-    {
-        return board[field.x, field.y];
+            fieldBotLeft = new Vector2(transform.position.x - fieldWorldSpaceSize.x / 2 + blockSize.x/2 - fieldBox.offset.x * transform.lossyScale.x, 
+                transform.position.y - fieldWorldSpaceSize.y / 2 + blockSize.y / 2 + fieldBox.offset.y * transform.lossyScale.y); 
+        }
     }
 
     public bool CheckFieldsTaken(Vector2Int[] fields)
     {
         foreach(Vector2Int field in fields)
         {
-            if (board[field.x, field.y])
+            if (field.x >= columns || field.x < 0 || field.y < 0 || board[field.x, field.y])
                 return true;
         }
 
         return false;
     }
 
-    public void placeTetromino(Tetromino tetromino)
+    public void PlaceTetromino(Tetromino tetromino)
     { 
         foreach(Vector2Int pos in tetromino.getBlockPositions())
         {
@@ -67,7 +67,7 @@ public class Board : MonoBehaviour
     void ScoreBoard()
     {
         int clearedRows = 0;
-        for(int i = 0; i < rows;++i)
+        for(int i = 0; i < fieldRows; ++i)
         {
             for(int j = 0; j < columns; ++j)
             {
@@ -111,7 +111,7 @@ public class Board : MonoBehaviour
 
     void RearangeRows()
     {
-        for(int i = 0; i < rows; ++i)
+        for(int i = 0; i < fieldRows; ++i)
         {
             for(int j = 0; j < columns; ++j)
             {
@@ -127,13 +127,13 @@ public class Board : MonoBehaviour
         }
     }
 
-    void ShiftRowsDown(int startRow)
+    void ShiftRowsDown(int fromRow)
     {
-        for(int i = startRow; i < rows - 1; ++i)
+        for(int i = fromRow; i < fieldRows; ++i)
         {
             for (int j = 0; j < columns; ++j)
             {
-                board[j, i] = board[j, i + 1];
+                board[j, i] = board[j, i - 1];
             }
         }
     }
@@ -144,16 +144,19 @@ public class Board : MonoBehaviour
             previewTetromino = Instantiate(tetrominoPrefabs[Random.Range(0,tetrominoPrefabs.Count)]);
 
         Tetromino toReturn = previewTetromino;
-        PlaceTetromino(toReturn);
-
+        SpawnTetromino(toReturn);
 
         previewTetromino = Instantiate(tetrominoPrefabs[Random.Range(0, tetrominoPrefabs.Count)]);
 
         return toReturn;
     }
 
-    public void PlaceTetromino(Tetromino tetromino)
+    void SpawnTetromino(Tetromino tetromino)
     {
-        tetromino.PlaceBlocks();
+        tetromino.SetBoardPosition(new Vector2Int(Random.Range(tetromino.SpawnColMin, tetromino.SpawnColMax), rows - 1));
+        tetromino.SetOriginPosition(fieldBotLeft);
+        tetromino.SetPosition();
+        tetromino.PlaceBlocksToMatrix();
+        tetromino.SetBoardPositionsToMatrix();
     }
 }

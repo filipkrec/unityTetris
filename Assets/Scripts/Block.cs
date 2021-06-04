@@ -5,7 +5,18 @@ using UnityEngine;
 public class Block : MonoBehaviour
 {
     SpriteRenderer sprite;
+    Vector2Int boardPos;
 
+    public Vector2Int BoardPos
+    {
+        get => boardPos;
+        set
+        {
+            boardPos = value;
+            Hide(boardPos.y >= Board.fieldRows);
+        }
+
+    }
     public void Initiate(Color color, Vector2 pos, Vector2 size, bool hidden = false)
     {
         sprite = GetComponent<SpriteRenderer>();
@@ -22,7 +33,6 @@ public class Block : MonoBehaviour
 
     public void SetColor(Color color)
     {
-
         sprite.color = color;
     }
 
@@ -47,5 +57,12 @@ public class Block : MonoBehaviour
             sprite.enabled = false;
         else
             sprite.enabled = true;
+    }
+
+    public void MoveBoardPosition(int x, int y)
+    {
+        boardPos.x += x;
+        boardPos.y += y;
+        Hide(boardPos.y >= Board.fieldRows);
     }
 }
