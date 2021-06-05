@@ -7,16 +7,40 @@ public class Player : MonoBehaviour
     public Board board;
 
     Tetromino activeTetromino;
+    Gravity gravity;
+    int currentLevel;
+
+    private void Awake()
+    {
+        currentLevel = 0;
+        gravity = GetComponent<Gravity>();
+    }
 
     private void Start()
     {
         activeTetromino = board.GetNextTetromino();
+        gravity.SetActiveTetromino(activeTetromino);
     }
 
     // Update is called once per frame
     void Update()
     {
-        if(Input.GetKeyDown(KeyCode.RightArrow))
+        if (Globals.paused)
+            return;
+
+        if(board.GrabNext)
+        {
+            activeTetromino = board.GetNextTetromino();
+            gravity.SetActiveTetromino(activeTetromino);
+
+            if (board.NextLevel())
+            {
+                currentLevel++;
+                gravity.IncreaseGs();
+            }
+        }
+
+        if (Input.GetKeyDown(KeyCode.RightArrow))
         {
             MoveTetrominoRight();
         }
@@ -26,22 +50,12 @@ public class Player : MonoBehaviour
         }
         else if (Input.GetKeyDown(KeyCode.DownArrow))
         {
-            MoveTetrominoDown();
+            gravity.HardDrop();
         }
         else if (Input.GetKeyDown(KeyCode.UpArrow))
         {
             RotateTetrominoRight();
         }
-    }
-    
-    void MoveTetrominoDown()
-    {
-        activeTetromino.MoveDown();
-
-        if (board.CheckFieldsTaken(activeTetromino.getBlockPositions()))
-            activeTetromino.MoveUp();
-        else 
-            activeTetromino.SetPosition();
     }
 
     void MoveTetrominoLeft()
@@ -50,8 +64,12 @@ public class Player : MonoBehaviour
 
         if (board.CheckFieldsTaken(activeTetromino.getBlockPositions()))
             activeTetromino.MoveRight();
-        else 
+        else
+        {
             activeTetromino.SetPosition();
+            if (gravity.SoftDroped)
+                gravity.ResetSoftDropTimer();
+        }
     }
 
     void MoveTetrominoRight()
@@ -60,8 +78,12 @@ public class Player : MonoBehaviour
 
         if (board.CheckFieldsTaken(activeTetromino.getBlockPositions()))
             activeTetromino.MoveLeft();
-        else 
+        else
+        {
             activeTetromino.SetPosition();
+            if (gravity.SoftDroped)
+                gravity.ResetSoftDropTimer();
+        }
     }
 
     void RotateTetrominoRight()
@@ -71,7 +93,11 @@ public class Player : MonoBehaviour
         if (board.CheckFieldsTaken(activeTetromino.getBlockPositions()))
             activeTetromino.RotateLeft();
         else
+        {
             activeTetromino.PlaceBlocksToMatrix();
+            if (gravity.SoftDroped)
+                gravity.ResetSoftDropTimer();
+        }
     }
     void RotateTetrominoLeft()
     {
@@ -80,6 +106,10 @@ public class Player : MonoBehaviour
         if (board.CheckFieldsTaken(activeTetromino.getBlockPositions()))
             activeTetromino.RotateRight();
         else
+        {
             activeTetromino.PlaceBlocksToMatrix();
+            if (gravity.SoftDroped)
+                gravity.ResetSoftDropTimer();
+        }
     }
 }

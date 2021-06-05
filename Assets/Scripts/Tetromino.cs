@@ -21,6 +21,7 @@ public class Tetromino : MonoBehaviour
 
     public int SpawnColMin { get => spawnColMin; }
     public int SpawnColMax { get => spawnColMax; }
+    public Block[] Blocks { get => blocks; }
 
     private void Awake()
     {
@@ -213,6 +214,25 @@ public class Tetromino : MonoBehaviour
         }
     }
 
+    public void ClearBlocksInRow(int row)
+    {
+        bool clearTetromino = true;
+        foreach (Block block in blocks)
+        {
+            if (block != null)
+            {
+                clearTetromino = false;
+                if (block.BoardPos.y == row)
+                {
+                    Destroy(block.gameObject);
+                }
+            }
+        }
+
+        if (clearTetromino)
+            Destroy(gameObject);
+    }
+
     public void SetBoardPositionsToMatrix()
     {
         int matrixDimensions = (int)Mathf.Sqrt(blockMatrix.Length);
@@ -229,5 +249,34 @@ public class Tetromino : MonoBehaviour
                 }
             }
         }
+    }
+
+    public void SetToBoard(SpriteRenderer board, Vector2 originPos)
+    {
+        transform.localScale = Vector2.one;
+        SpriteRenderer rend;
+        foreach (Block block in blocks)
+        {
+            rend = block.GetComponent<SpriteRenderer>();
+            rend.sortingOrder = board.sortingOrder + 1;
+        }
+
+        SetOriginPosition(originPos);
+        SetPosition();
+        SetBoardPositionsToMatrix();
+    }
+
+    public void SetToPreview(SpriteRenderer previewBoard , float scaleDivisor)
+    {
+        PlaceBlocksToMatrix();
+        transform.localScale = Vector2.one / scaleDivisor;
+        SpriteRenderer rend;
+        foreach (Block block in blocks)
+        {
+            rend = block.GetComponent<SpriteRenderer>();
+            rend.sortingOrder = previewBoard.sortingOrder + 1;
+        }
+        transform.position = previewBoard.transform.position + new Vector3(-previewBoard.transform.lossyScale.x, previewBoard.transform.lossyScale.y, 0f); 
+        //previewBoard top left pivot
     }
 }

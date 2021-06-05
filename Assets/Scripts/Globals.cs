@@ -7,11 +7,14 @@ public class Globals : MonoBehaviour
     static Block s_block;
     public Block block;
 
+    public static bool paused;
+
     public static Block Block { get => s_block; }
 
     // Start is called before the first frame update
     void Awake()
     {
+        paused = false;
         s_block = block;
     }
 }

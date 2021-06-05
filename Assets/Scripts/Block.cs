@@ -41,6 +41,12 @@ public class Block : MonoBehaviour
         transform.position = pos;
     }
 
+    public void ShiftDown()
+    {
+        boardPos.y -= 1;
+        transform.position -= new Vector3(0f, Board.BlockSize.y,0f);
+    }
+
     public void MoveTransformposition(Vector2 move)
     {
         transform.position += (Vector3)move;

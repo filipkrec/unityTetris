@@ -11,12 +11,17 @@ public class Board : MonoBehaviour
     public const int fieldRows = rows - 2;
 
     int score;
+    int rowsClearedThisLevel;
+    bool grabNext;
 
     public List<Tetromino> tetrominoPrefabs;
+    public SpriteRenderer boardBackground;
+    public SpriteRenderer previewBoard;
 
     static Vector2 blockSize;
     Vector2 fieldWorldSpaceSize;
     Vector2 fieldBotLeft;
+    List<Block> placedBlocks;
 
     Tetromino previewTetromino;
 
@@ -24,12 +29,15 @@ public class Board : MonoBehaviour
 
     public static Vector2 BlockSize { get => blockSize; }
     public int Score { get => score; }
+    public int RowsClearedThisLevel { get => rowsClearedThisLevel; }
+    public bool GrabNext { get => grabNext; }
 
     private void Awake()
     {
         board = new bool[columns , rows];
 
         BoxCollider2D fieldBox = GetComponent<BoxCollider2D>();
+        placedBlocks = new List<Block>();
 
 #if DEBUG 
         if (fieldBox != null)
@@ -56,12 +64,18 @@ public class Board : MonoBehaviour
 
     public void PlaceTetromino(Tetromino tetromino)
     { 
-        foreach(Vector2Int pos in tetromino.getBlockPositions())
+        foreach(Block block in tetromino.Blocks)
         {
-            board[pos.x, pos.y] = true;
+            board[block.BoardPos.x, block.BoardPos.y] = true;
+            block.transform.SetParent(transform);
+            placedBlocks.Add(block);
         }
 
+        Destroy(tetromino.gameObject);
+
         ScoreBoard();
+
+        grabNext = true;
     } 
 
     void ScoreBoard()
@@ -81,6 +95,8 @@ public class Board : MonoBehaviour
                 }
             }
         }
+
+        rowsClearedThisLevel += clearedRows;
 
         switch (clearedRows)
         {
@@ -119,7 +135,7 @@ public class Board : MonoBehaviour
                 {
                     break;
                 }
-                else
+                else if (j == columns - 1 && board[j, i])
                 {
                     ShiftRowsDown(i);
                 }
@@ -129,34 +145,68 @@ public class Board : MonoBehaviour
 
     void ShiftRowsDown(int fromRow)
     {
+        List<Block> toRemove = new List<Block>();
+        foreach(Block block in placedBlocks)
+        {
+            if (block.BoardPos.y == fromRow)
+            {
+                toRemove.Add(block);
+            }
+            else if (block.BoardPos.y > fromRow)
+                block.ShiftDown();
+        }
+
+        foreach(Block block in toRemove)
+        {
+            placedBlocks.Remove(block);
+            Destroy(block.gameObject);
+        }
+
+
         for(int i = fromRow; i < fieldRows; ++i)
         {
             for (int j = 0; j < columns; ++j)
             {
-                board[j, i] = board[j, i - 1];
+                board[j, i] = board[j, i + 1];
             }
         }
     }
 
     public Tetromino GetNextTetromino()
     {
-        if(previewTetromino == null)
-            previewTetromino = Instantiate(tetrominoPrefabs[Random.Range(0,tetrominoPrefabs.Count)]);
+        grabNext = false;
+
+        if (previewTetromino == null)
+            SpawnPreviewTetromino();
 
         Tetromino toReturn = previewTetromino;
-        SpawnTetromino(toReturn);
+        SetPreviewTetrominoToBoard();
 
-        previewTetromino = Instantiate(tetrominoPrefabs[Random.Range(0, tetrominoPrefabs.Count)]);
+        SpawnPreviewTetromino();
 
         return toReturn;
     }
 
-    void SpawnTetromino(Tetromino tetromino)
+    void SetPreviewTetrominoToBoard()
     {
-        tetromino.SetBoardPosition(new Vector2Int(Random.Range(tetromino.SpawnColMin, tetromino.SpawnColMax), rows - 1));
-        tetromino.SetOriginPosition(fieldBotLeft);
-        tetromino.SetPosition();
-        tetromino.PlaceBlocksToMatrix();
-        tetromino.SetBoardPositionsToMatrix();
+        previewTetromino.SetBoardPosition(new Vector2Int(Random.Range(previewTetromino.SpawnColMin, previewTetromino.SpawnColMax), rows - 1));
+        previewTetromino.SetToBoard(boardBackground, fieldBotLeft);
+    }
+
+    public bool NextLevel()
+    {
+        if (rowsClearedThisLevel > 10) //10 lines = level up
+        {
+            rowsClearedThisLevel = 0;
+            return true;
+        }
+
+        return false;
+    }
+
+    void SpawnPreviewTetromino()
+    {
+        previewTetromino = Instantiate(tetrominoPrefabs[Random.Range(0, tetrominoPrefabs.Count)]);
+        previewTetromino.SetToPreview(previewBoard, 2f);
     }
 }
