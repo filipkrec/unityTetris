@@ -25,7 +25,7 @@ public class Gravity : MonoBehaviour
     {
         dropTimer = 0f;
         softDropDelayTimer = 0f;
-        Gs = 0.02f;
+        Gs = 0.015f;
         RecalculateTimers();
         softDroped = false;
     }
@@ -62,7 +62,7 @@ public class Gravity : MonoBehaviour
 
         if (softDroped)
         {
-            softDropDelayTimer++;
+            softDropDelayTimer+= Time.deltaTime;
             if (softDropDelayTimer > softDropDelay)
             {
                 softDropDelayTimer = 0f;
@@ -96,19 +96,24 @@ public class Gravity : MonoBehaviour
 
     void RecalculateTimers()
     {
-        dropTime = 1f / (Gs * 20f); // 1G = 1 full drop in 1 sec = 1/20 s drop time
-        softDropDelay = 0.5f / (10f / Gs) > 2f ? 2f : 0.5f / (10f / Gs); // 0.5s at 10Gs, longest 2s
+        dropTime = 1f / (Gs * 60); // G = 1 cell per frame = 1 cell / 60
+        softDropDelay = 5 * dropTime;  
+        softDropDelay = softDropDelay > 2f ? 2f : softDropDelay < 0.2f ? 0.2f : softDropDelay; //min 0.2f , max 2f
     }
 
     void SoftDrop()
     {
+        softDroped = true;
         currentResets = resets;
     }
 
     public void ResetSoftDropTimer()
     {
-        softDropDelayTimer = 0f;
-        currentResets--;
+        if (currentResets > 0)
+        {
+            softDropDelayTimer = 0f;
+            currentResets--;
+        }
     }
 
     public void HardDrop()

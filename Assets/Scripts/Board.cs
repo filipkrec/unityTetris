@@ -69,6 +69,8 @@ public class Board : MonoBehaviour
             board[block.BoardPos.x, block.BoardPos.y] = true;
             block.transform.SetParent(transform);
             placedBlocks.Add(block);
+            if (block.BoardPos.y > fieldRows)
+                Lose();
         }
 
         Destroy(tetromino.gameObject);
@@ -118,9 +120,11 @@ public class Board : MonoBehaviour
                 break;
         }
 
+
         if(clearedRows > 0)
         {
             RearangeRows();
+            scoreTxt.text = score.ToString();
         }
 
     }
@@ -138,6 +142,7 @@ public class Board : MonoBehaviour
                 else if (j == columns - 1 && board[j, i])
                 {
                     ShiftRowsDown(i);
+                    --i;
                 }
             }
         }
@@ -189,13 +194,13 @@ public class Board : MonoBehaviour
 
     void SetPreviewTetrominoToBoard()
     {
-        previewTetromino.SetBoardPosition(new Vector2Int(Random.Range(previewTetromino.SpawnColMin, previewTetromino.SpawnColMax), rows - 1));
+        previewTetromino.SetBoardPosition(new Vector2Int(Random.Range(previewTetromino.SpawnColMin, previewTetromino.SpawnColMax + 1), rows - 1));
         previewTetromino.SetToBoard(boardBackground, fieldBotLeft);
     }
 
     public bool NextLevel()
     {
-        if (rowsClearedThisLevel > 10) //10 lines = level up
+        if (rowsClearedThisLevel >= 10) //10 lines = level up
         {
             rowsClearedThisLevel = 0;
             return true;
@@ -208,5 +213,10 @@ public class Board : MonoBehaviour
     {
         previewTetromino = Instantiate(tetrominoPrefabs[Random.Range(0, tetrominoPrefabs.Count)]);
         previewTetromino.SetToPreview(previewBoard, 2f);
+    }
+
+    void Lose()
+    {
+        Globals.paused = true;
     }
 }

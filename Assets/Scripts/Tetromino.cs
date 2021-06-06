@@ -99,13 +99,13 @@ public class Tetromino : MonoBehaviour
     public void RotateLeft()
     {
         Util.RotateBoolMatrixCunterClockwise(blockMatrix);
-        SetBoardPositionsToMatrix();
+        SetBoardPositionsFromMatrix();
     }
 
     public void RotateRight()
     {
         Util.RotateBoolMatrixClockwise(blockMatrix);
-        SetBoardPositionsToMatrix();
+        SetBoardPositionsFromMatrix();
     }
 
     public void GenerateTetromino()
@@ -123,7 +123,7 @@ public class Tetromino : MonoBehaviour
                 blockMatrix[2, 2] = true;
                 blockMatrix[2, 3] = true;
                 spawnColMin = -2;
-                spawnColMax = Board.columns - 2;
+                spawnColMax = Board.columns - 3;
                 break;
             case TetrominoShape.J:
                 blockMatrix = new bool[3, 3];
@@ -141,7 +141,7 @@ public class Tetromino : MonoBehaviour
                 blockMatrix[1, 2] = true;
                 blockMatrix[2, 2] = true;
                 spawnColMin = 0;
-                spawnColMax = Board.columns - 1;
+                spawnColMax = Board.columns - 3;
                 break;
             case TetrominoShape.O:
                 blockMatrix = new bool[2, 2];
@@ -150,7 +150,7 @@ public class Tetromino : MonoBehaviour
                 blockMatrix[1, 0] = true;
                 blockMatrix[1, 1] = true;
                 spawnColMin = 0;
-                spawnColMax = Board.columns - 1;
+                spawnColMax = Board.columns - 2;
                 break;
             case TetrominoShape.S:
                 blockMatrix = new bool[3, 3];
@@ -159,7 +159,7 @@ public class Tetromino : MonoBehaviour
                 blockMatrix[1, 0] = true;
                 blockMatrix[2, 0] = true;
                 spawnColMin = 0;
-                spawnColMax = Board.columns - 2;
+                spawnColMax = Board.columns - 3;
                 break;
             case TetrominoShape.T:
                 blockMatrix = new bool[3, 3];
@@ -168,7 +168,7 @@ public class Tetromino : MonoBehaviour
                 blockMatrix[2, 1] = true;
                 blockMatrix[1, 0] = true;
                 spawnColMin = 0;
-                spawnColMax = Board.columns - 2;
+                spawnColMax = Board.columns - 3;
                 break;
             case TetrominoShape.Z:
                 blockMatrix = new bool[3, 3];
@@ -214,26 +214,7 @@ public class Tetromino : MonoBehaviour
         }
     }
 
-    public void ClearBlocksInRow(int row)
-    {
-        bool clearTetromino = true;
-        foreach (Block block in blocks)
-        {
-            if (block != null)
-            {
-                clearTetromino = false;
-                if (block.BoardPos.y == row)
-                {
-                    Destroy(block.gameObject);
-                }
-            }
-        }
-
-        if (clearTetromino)
-            Destroy(gameObject);
-    }
-
-    public void SetBoardPositionsToMatrix()
+    public void SetBoardPositionsFromMatrix()
     {
         int matrixDimensions = (int)Mathf.Sqrt(blockMatrix.Length);
         int count = 0;
@@ -262,8 +243,9 @@ public class Tetromino : MonoBehaviour
         }
 
         SetOriginPosition(originPos);
+        PlaceBlocksToMatrix();
+        SetBoardPositionsFromMatrix();
         SetPosition();
-        SetBoardPositionsToMatrix();
     }
 
     public void SetToPreview(SpriteRenderer previewBoard , float scaleDivisor)
@@ -276,7 +258,30 @@ public class Tetromino : MonoBehaviour
             rend = block.GetComponent<SpriteRenderer>();
             rend.sortingOrder = previewBoard.sortingOrder + 1;
         }
-        transform.position = previewBoard.transform.position + new Vector3(-previewBoard.transform.lossyScale.x, previewBoard.transform.lossyScale.y, 0f); 
+        CenterBlocks();
+        transform.position = previewBoard.transform.position; 
         //previewBoard top left pivot
+    }
+
+    public void CenterBlocks()
+    {
+        int matrixDimensions = (int)Mathf.Sqrt(blockMatrix.Length);
+        int count = 0;
+
+        float totalX = 0f;
+        float totalY = 0f;
+
+        foreach (Block block in blocks)
+        {
+            totalX += block.transform.position.x;
+            totalY += block.transform.position.y;
+        }
+
+        Vector3 center = new Vector3(totalX / blocks.Length, totalY / blocks.Length, 0f);
+
+        foreach (Block block in blocks)
+        {
+            block.SetTransformPosition(block.transform.position + (transform.position - center));
+        }
     }
 }
