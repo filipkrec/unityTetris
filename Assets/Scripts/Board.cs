@@ -8,7 +8,7 @@ public class Board : MonoBehaviour
     bool[,] board;
     public const int columns = 10;
     public const int rows = 23; // 2 invis rows for spawn
-    public const int fieldRows = rows - 2;
+    public const int fieldRows = rows - 2; //polje za igru dimenzija je 10x21
 
     int score;
     int rowsClearedThisLevel;
@@ -18,6 +18,7 @@ public class Board : MonoBehaviour
     public SpriteRenderer boardBackground;
     public SpriteRenderer previewBoard;
     public UI ui;
+    public Sound sound;
 
     static Vector2 blockSize;
     Vector2 fieldWorldSpaceSize;
@@ -70,9 +71,12 @@ public class Board : MonoBehaviour
             board[block.BoardPos.x, block.BoardPos.y] = true;
             block.transform.SetParent(transform);
             placedBlocks.Add(block);
-            if (block.BoardPos.y >= fieldRows)
+
+            if (block.BoardPos.y >= 20) //igra treba završiti kada se u 21. redu nalazi kvadrat tetrominoa koji je završio s padanjem  
                 Lose();
         }
+
+        sound.PlayDrop();
 
         Destroy(tetromino.gameObject);
 
@@ -124,6 +128,7 @@ public class Board : MonoBehaviour
 
         if(clearedRows > 0)
         {
+            sound.PlayClear();
             RearangeRows();
             scoreTxt.text = score.ToString();
         }
@@ -218,6 +223,7 @@ public class Board : MonoBehaviour
 
     void Lose()
     {
+        sound.PlayLose();
         ui.Lose(score);
     }
 }

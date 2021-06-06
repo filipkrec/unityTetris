@@ -14,7 +14,6 @@ public class Globals : MonoBehaviour
     // Start is called before the first frame update
     void Awake()
     {
-        paused = false;
         s_block = block;
     }
 }

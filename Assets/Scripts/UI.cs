@@ -2,18 +2,43 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 using TMPro;
 
 public class UI : MonoBehaviour
 {
+    public GameObject start;
     public GameObject pause;
     public GameObject gameOver;
     public GameObject pauseBtn;
+    bool muted;
 
-    public GameObject muteBtn;
+    public Image muteBtn;
+    public Sprite muteSprite;
+    public Sprite unmuteSprite;
+    public Sound sound;
 
     public TextMeshProUGUI highScoreText;
     public TextMeshProUGUI scoreTxt;
+
+    private void Awake()
+    {
+        Globals.paused = true;
+        pauseBtn.SetActive(false);
+        start.SetActive(true);
+
+        int mutedInt = PlayerPrefs.GetInt("Muted");
+        muted = mutedInt == 1;
+
+        if (muted)
+            Mute();
+    }
+
+    public void StartGame()
+    {
+        start.SetActive(false);
+        pauseBtn.SetActive(true);
+    }
 
     public void Pause()
     {
@@ -39,12 +64,12 @@ public class UI : MonoBehaviour
         Globals.paused = true;
         gameOver.SetActive(true);
         pauseBtn.SetActive(false);
-        int highScore = 0; //TODO
+        int highScore = SaveSystem.Load();
         if(score > highScore)
         {
             highScoreText.text = "New high score:";
             scoreTxt.text = score.ToString();
-            //TODO save score
+            SaveSystem.Save(score);
         }
         else
         {
@@ -55,6 +80,29 @@ public class UI : MonoBehaviour
 
     public void ToggleMute()
     {
+        if (muted)
+        {
+            Unmute();
+        }
+        else
+        {
+            Mute();
+        }
+    }
 
+    void Mute()
+    {
+        muted = true;
+        PlayerPrefs.SetInt("Muted", 1);
+        muteBtn.sprite = unmuteSprite;
+        sound.Mute();
+    }
+
+    void Unmute()
+    {
+        muted = false;
+        PlayerPrefs.SetInt("Muted", 0);
+        muteBtn.sprite = muteSprite;
+        sound.Unmute();
     }
 }

@@ -5,26 +5,37 @@ using UnityEngine;
 public class Player : MonoBehaviour
 {
     public Board board;
+    bool started = false;
 
     Tetromino activeTetromino;
     Gravity gravity;
+    Sound sound;
     int currentLevel;
 
     private void Awake()
     {
         currentLevel = 0;
         gravity = GetComponent<Gravity>();
+        sound = GetComponent<Sound>();
+        Globals.paused = true;
     }
 
-    private void Start()
+    void StartGame()
     {
+        started = true;
+        sound.PlayBGM();
         activeTetromino = board.GetNextTetromino();
         gravity.SetActiveTetromino(activeTetromino);
+        GetComponent<UI>().StartGame();
+        Globals.paused = false;
     }
 
     // Update is called once per frame
     void Update()
     {
+        if (!started && Input.GetMouseButtonDown(0))
+            StartGame();
+
         if (Globals.paused)
             return;
 
@@ -63,9 +74,13 @@ public class Player : MonoBehaviour
         activeTetromino.MoveLeft();
 
         if (board.CheckFieldsTaken(activeTetromino.getBlockPositions()))
+        {
             activeTetromino.MoveRight();
+            sound.PlayError();
+        }
         else
         {
+            sound.PlayMove();
             activeTetromino.SetPosition();
             if (gravity.SoftDroped)
                 gravity.ResetSoftDropTimer();
@@ -77,9 +92,13 @@ public class Player : MonoBehaviour
         activeTetromino.MoveRight();
 
         if (board.CheckFieldsTaken(activeTetromino.getBlockPositions()))
+        {
             activeTetromino.MoveLeft();
+            sound.PlayError();
+        }
         else
         {
+            sound.PlayMove();
             activeTetromino.SetPosition();
             if (gravity.SoftDroped)
                 gravity.ResetSoftDropTimer();
@@ -91,9 +110,13 @@ public class Player : MonoBehaviour
         activeTetromino.RotateRight();
 
         if (board.CheckFieldsTaken(activeTetromino.getBlockPositions()))
+        {
             activeTetromino.RotateLeft();
+            sound.PlayError();
+        }
         else
         {
+            sound.PlayMove();
             activeTetromino.PlaceBlocksToMatrix();
             if (gravity.SoftDroped)
                 gravity.ResetSoftDropTimer();
@@ -104,9 +127,13 @@ public class Player : MonoBehaviour
         activeTetromino.RotateLeft();
 
         if (board.CheckFieldsTaken(activeTetromino.getBlockPositions()))
+        {
             activeTetromino.RotateRight();
+            sound.PlayError();
+        }
         else
         {
+            sound.PlayMove();
             activeTetromino.PlaceBlocksToMatrix();
             if (gravity.SoftDroped)
                 gravity.ResetSoftDropTimer();
