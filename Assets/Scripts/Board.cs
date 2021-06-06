@@ -17,6 +17,7 @@ public class Board : MonoBehaviour
     public List<Tetromino> tetrominoPrefabs;
     public SpriteRenderer boardBackground;
     public SpriteRenderer previewBoard;
+    public UI ui;
 
     static Vector2 blockSize;
     Vector2 fieldWorldSpaceSize;
@@ -69,7 +70,7 @@ public class Board : MonoBehaviour
             board[block.BoardPos.x, block.BoardPos.y] = true;
             block.transform.SetParent(transform);
             placedBlocks.Add(block);
-            if (block.BoardPos.y > fieldRows)
+            if (block.BoardPos.y >= fieldRows)
                 Lose();
         }
 
@@ -217,6 +218,6 @@ public class Board : MonoBehaviour
 
     void Lose()
     {
-        Globals.paused = true;
+        ui.Lose(score);
     }
 }

@@ -265,9 +265,6 @@ public class Tetromino : MonoBehaviour
 
     public void CenterBlocks()
     {
-        int matrixDimensions = (int)Mathf.Sqrt(blockMatrix.Length);
-        int count = 0;
-
         float totalX = 0f;
         float totalY = 0f;
 
