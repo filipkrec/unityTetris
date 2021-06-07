@@ -37,11 +37,11 @@ public class Tetromino : MonoBehaviour
     {
         //block position = tetromino position + matrix position
         Vector2Int[] positions = new Vector2Int[4];
-        int count = 0;
+        int i = 0;
         foreach(Block block in blocks)
         {
-            positions[count] = block.BoardPos;
-            count++;
+            positions[i] = block.BoardPos;
+            i++;
         }
 
         return positions;
@@ -183,6 +183,36 @@ public class Tetromino : MonoBehaviour
                 break;
         }
     }
+    public void SetToBoard(SpriteRenderer board, Vector2 originPos)
+    {
+        transform.localScale = Vector2.one;
+        SpriteRenderer rend;
+        foreach (Block block in blocks)
+        {
+            rend = block.GetComponent<SpriteRenderer>();
+            rend.sortingOrder = board.sortingOrder + 1;
+        }
+
+        SetOriginPosition(originPos); //aligns tetromino to board
+        PlaceBlocksToMatrix();
+        SetBoardPositionsFromMatrix();
+        SetPosition();
+    }
+
+    public void SetToPreview(SpriteRenderer previewBoard, float scaleDivisor)
+    {
+        PlaceBlocksToMatrix();
+        transform.localScale = Vector2.one / scaleDivisor;
+        SpriteRenderer rend;
+        foreach (Block block in blocks)
+        {
+            rend = block.GetComponent<SpriteRenderer>();
+            rend.sortingOrder = previewBoard.sortingOrder + 1;
+        }
+        CenterBlocks();
+        transform.position = previewBoard.transform.position;
+        //previewBoard top left pivot
+    }
 
     public void PlaceBlocksToMatrix()
     {
@@ -232,37 +262,6 @@ public class Tetromino : MonoBehaviour
                 }
             }
         }
-    }
-
-    public void SetToBoard(SpriteRenderer board, Vector2 originPos)
-    {
-        transform.localScale = Vector2.one;
-        SpriteRenderer rend;
-        foreach (Block block in blocks)
-        {
-            rend = block.GetComponent<SpriteRenderer>();
-            rend.sortingOrder = board.sortingOrder + 1;
-        }
-
-        SetOriginPosition(originPos);
-        PlaceBlocksToMatrix();
-        SetBoardPositionsFromMatrix();
-        SetPosition();
-    }
-
-    public void SetToPreview(SpriteRenderer previewBoard , float scaleDivisor)
-    {
-        PlaceBlocksToMatrix();
-        transform.localScale = Vector2.one / scaleDivisor;
-        SpriteRenderer rend;
-        foreach (Block block in blocks)
-        {
-            rend = block.GetComponent<SpriteRenderer>();
-            rend.sortingOrder = previewBoard.sortingOrder + 1;
-        }
-        CenterBlocks();
-        transform.position = previewBoard.transform.position; 
-        //previewBoard top left pivot
     }
 
     public void CenterBlocks()

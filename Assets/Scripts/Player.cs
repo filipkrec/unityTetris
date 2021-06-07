@@ -6,39 +6,48 @@ public class Player : MonoBehaviour
 {
     [SerializeField]
     Board board;
+
+    [SerializeField]
+    UI ui;
+
     bool started = false;
 
     Tetromino activeTetromino;
     Gravity gravity;
     Sound sound;
-    int currentLevel;
+ //   int currentLevel; TODO?
 
     Vector2 touchPoint;
-    bool spun;
+    bool rotated;
     bool moved;
     bool ignoreTouch;
     int touchSensitivity;
 
     private void Awake()
     {
-        currentLevel = 0;
-        gravity = GetComponent<Gravity>();
-        sound = GetComponent<Sound>();
-        Globals.paused = true;
-        touchSensitivity = PlayerPrefs.GetInt("Sensitivity");
+//        currentLevel = 0;
 
-        if (touchSensitivity == 0)
-            touchSensitivity = 10;
+        gravity = GetComponent<Gravity>();
+        gravity.SetBoard(board);
+
+        sound = GetComponent<Sound>();
+
+        board.Ui = ui;
+        board.Sound = sound;
+
     }
 
     void StartGame()
     {
         started = true;
         sound.PlayBGM();
+
         activeTetromino = board.GetNextTetromino();
         gravity.SetActiveTetromino(activeTetromino);
-        GetComponent<UI>().StartGame();
-        Globals.paused = false;
+
+        touchSensitivity = ui.GetSensitivity();
+
+        ui.StartGame();
     }
 
     // Update is called once per frame
@@ -63,10 +72,11 @@ public class Player : MonoBehaviour
 
             if (board.NextLevel())
             {
-                currentLevel++;
+//                currentLevel++;
                 gravity.IncreaseGs();
             }
         }
+
         ProcessTouchInput();
 #if DEBUG
         ProcessPcInput();
@@ -106,51 +116,66 @@ public class Player : MonoBehaviour
             {
                 moved = false;
                 ignoreTouch = false;
-                spun = false;
+                rotated = false;
                 touchPoint = touch.position;
             }
-            else if (!ignoreTouch)
+            else if (!ignoreTouch) //if droped ignore till next touch
             {
-                //Left Right
-                if (Mathf.Abs(touchPoint.x - touch.position.x) > Screen.width / touchSensitivity)
-                {
-                    moved = true;
-                    if (touch.position.x < touchPoint.x)
-                    {
-                        touchPoint.x = touchPoint.x - Screen.width / touchSensitivity;
-                        MoveTetrominoLeft();
-                    }
-                    else
-                    {
-                        touchPoint.x = touch.position.x + Screen.width / touchSensitivity;
-                        MoveTetrominoRight();
-                    }
-                }
+                if(!rotated) //dont move if rotating
+                TouchMoveLeftRight(touch);
 
-                //Rotate
-                if (!spun && !moved && touch.position.y - touchPoint.y > Screen.height / touchSensitivity)
-                {
-                    spun = true;
-                    //move once per 1/6 of the screen, move twice if > 3 moves per sec, move 3 times if over 4 moves per sec
+                if (!moved && !rotated) //1 rotate per touch
+                    TouchRotate(touch);
 
-                    if (touch.position.x < Screen.width / 2)
-                    {
-                        RotateTetrominoRight();
-                    }
-                    else
-                    {
-                        RotateTetrominoLeft();
-                    }
-                }
-
-                if(!spun && !moved && touchPoint.y - touch.position.y > Screen.height / touchSensitivity)
-                {
-                    gravity.HardDrop();
-                    ignoreTouch = true;
-                }
+                else if (!moved && !rotated) //dont drop on move/rotate touch
+                    TouchDrop(touch);
             }
         }
 
+    }
+
+    void TouchMoveLeftRight(Touch touch)
+    {
+        if (Mathf.Abs(touchPoint.x - touch.position.x) > Screen.width / touchSensitivity)
+        {
+            if (touch.position.x < touchPoint.x)
+            {
+                touchPoint.x = touchPoint.x - Screen.width / touchSensitivity;
+                MoveTetrominoLeft();
+            }
+            else
+            {
+                touchPoint.x = touch.position.x + Screen.width / touchSensitivity;
+                MoveTetrominoRight();
+            }
+            moved = true;
+        }
+    }
+
+    void TouchRotate(Touch touch)
+    {
+        if (touch.position.y - touchPoint.y > Screen.height / touchSensitivity)
+        {
+            if (touch.position.x < Screen.width / 2)
+            {
+                RotateTetrominoRight();
+            }
+            else
+            {
+                RotateTetrominoLeft();
+            }
+
+            rotated = true;
+        }
+    }
+
+    void TouchDrop(Touch touch)
+    {
+        if (touchPoint.y - touch.position.y > Screen.height / touchSensitivity)
+        {
+            gravity.HardDrop();
+            ignoreTouch = true;
+        }
     }
 
 
@@ -223,11 +248,5 @@ public class Player : MonoBehaviour
             if (gravity.SoftDroped)
                 gravity.ResetSoftDropTimer();
         }
-    }
-
-    public void ChangeTouchSensitivity(System.Single sensitivity)
-    {
-        touchSensitivity = (int)sensitivity;
-        PlayerPrefs.SetInt("Sensitivity", touchSensitivity);
     }
 }

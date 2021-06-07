@@ -21,7 +21,6 @@ public static class Util
     {
         int size = (int)Mathf.Sqrt(arr.Length);
 
-
         for (int i = 0; i < size; i++)
             for (int j = i; j < size; j++)
                 swap(ref arr[i,j], ref arr[j,i]);

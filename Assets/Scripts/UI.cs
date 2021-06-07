@@ -15,7 +15,9 @@ public class UI : MonoBehaviour
     GameObject gameOver;
     [SerializeField]
     GameObject pauseBtn;
-    bool muted;
+
+    [SerializeField]
+    TextMeshProUGUI scoreBoardTxt;
 
     [SerializeField]
     Image muteBtn;
@@ -25,20 +27,31 @@ public class UI : MonoBehaviour
     Sprite unmuteSprite;
     [SerializeField]
     Sound sound;
+    bool muted;
+
+    int sensitivity;
 
     [SerializeField]
     TextMeshProUGUI highScoreText;
     [SerializeField]
     TextMeshProUGUI scoreTxt;
 
+    public TextMeshProUGUI ScoreBoardTxt { get => scoreBoardTxt; }
+
     private void Awake()
     {
-        Globals.paused = true;
+        Globals.paused = true; 
         pauseBtn.SetActive(false);
-        start.SetActive(true);
+        start.SetActive(true);  
+        //Start UI tutorial, touch to start game
 
-        int mutedInt = PlayerPrefs.GetInt("Muted");
+        int mutedInt = PlayerPrefs.GetInt("Muted"); //load mute
         muted = mutedInt == 1;
+
+        sensitivity = PlayerPrefs.GetInt("Sensitivity"); //load sensitivity ,1 move = screen width/touchsensitivity
+
+        if (sensitivity == 0)
+            sensitivity = 10; 
 
         if (muted)
             Mute();
@@ -46,6 +59,7 @@ public class UI : MonoBehaviour
 
     public void StartGame()
     {
+        Globals.paused = false;
         start.SetActive(false);
         pauseBtn.SetActive(true);
     }
@@ -114,5 +128,16 @@ public class UI : MonoBehaviour
         PlayerPrefs.SetInt("Muted", 0);
         muteBtn.sprite = muteSprite;
         sound.Unmute();
+    }
+
+    public int GetSensitivity()
+    {
+        return sensitivity;
+    }
+
+    public void SetTouchSensitivity(System.Single sensitivity)
+    {
+        this.sensitivity = (int)sensitivity;
+        PlayerPrefs.SetInt("Sensitivity", this.sensitivity);
     }
 }

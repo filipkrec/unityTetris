@@ -488,8 +488,8 @@ RectTransform:
   - {fileID: 1355733089}
   - {fileID: 1256187738}
   - {fileID: 1644831689}
-  m_Father: {fileID: 0}
-  m_RootOrder: 4
+  m_Father: {fileID: 1156918885}
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -763,8 +763,8 @@ RectTransform:
   m_LocalScale: {x: 0, y: 0, z: 0}
   m_Children:
   - {fileID: 1092651650}
-  m_Father: {fileID: 0}
-  m_RootOrder: 3
+  m_Father: {fileID: 1156918885}
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -914,7 +914,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1016870268}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: 
         m_MethodName: Pause
         m_Mode: 1
@@ -1046,7 +1046,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1016870268}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: 
         m_MethodName: Restart
         m_Mode: 1
@@ -1351,7 +1351,7 @@ Transform:
   - {fileID: 1012354630}
   - {fileID: 108027003}
   m_Father: {fileID: 0}
-  m_RootOrder: 5
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &433981294
 MonoBehaviour:
@@ -1375,9 +1375,6 @@ MonoBehaviour:
   - {fileID: 7116234495310384568, guid: 57868f873299b11439cd77259ba4c7ca, type: 3}
   boardBackground: {fileID: 1012354631}
   previewBoard: {fileID: 108027004}
-  ui: {fileID: 1016870268}
-  sound: {fileID: 1016870272}
-  scoreTxt: {fileID: 1756409087}
 --- !u!61 &433981295
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -1653,7 +1650,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 1
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &856486692
 GameObject:
@@ -1737,7 +1734,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1016870268}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: 
         m_MethodName: ToggleMute
         m_Mode: 1
@@ -2015,7 +2012,6 @@ GameObject:
   - component: {fileID: 1016870265}
   - component: {fileID: 1016870264}
   - component: {fileID: 1016870267}
-  - component: {fileID: 1016870268}
   - component: {fileID: 1016870272}
   - component: {fileID: 1016870271}
   - component: {fileID: 1016870270}
@@ -2065,7 +2061,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 6
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1016870267
 MonoBehaviour:
@@ -2079,29 +2075,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: aa1c6e8ea4e36694e91437e2c64592ce, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  board: {fileID: 433981294}
---- !u!114 &1016870268
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1016870263}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7bf2244422bc643418673f1e047ef76c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  start: {fileID: 1644831688}
-  pause: {fileID: 1256187737}
-  gameOver: {fileID: 1355733088}
-  pauseBtn: {fileID: 253851497}
-  muteBtn: {fileID: 856486695}
-  muteSprite: {fileID: 21300000, guid: a5e5f4f9a0bcf0e46ab2e1f7b07dba40, type: 3}
-  unmuteSprite: {fileID: 21300000, guid: 1b560ef6c011b084a910f3a3c6b30e27, type: 3}
-  sound: {fileID: 1016870272}
-  highScoreText: {fileID: 1525794}
-  scoreTxt: {fileID: 1793349499}
 --- !u!82 &1016870269
 AudioSource:
   m_ObjectHideFlags: 0
@@ -2615,14 +2588,71 @@ RectTransform:
   m_LocalScale: {x: 0, y: 0, z: 0}
   m_Children:
   - {fileID: 393721822}
-  m_Father: {fileID: 0}
-  m_RootOrder: 2
+  m_Father: {fileID: 1156918885}
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
+--- !u!1 &1156918883
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1156918885}
+  - component: {fileID: 1156918884}
+  m_Layer: 0
+  m_Name: Canvases
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1156918884
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1156918883}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7bf2244422bc643418673f1e047ef76c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  start: {fileID: 1644831688}
+  pause: {fileID: 1256187737}
+  gameOver: {fileID: 1355733088}
+  pauseBtn: {fileID: 253851497}
+  scoreBoardTxt: {fileID: 0}
+  muteBtn: {fileID: 856486695}
+  muteSprite: {fileID: 21300000, guid: a5e5f4f9a0bcf0e46ab2e1f7b07dba40, type: 3}
+  unmuteSprite: {fileID: 21300000, guid: 1b560ef6c011b084a910f3a3c6b30e27, type: 3}
+  sound: {fileID: 1016870272}
+  highScoreText: {fileID: 1525794}
+  scoreTxt: {fileID: 1793349499}
+--- !u!4 &1156918885
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1156918883}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children:
+  - {fileID: 1107207422}
+  - {fileID: 98893811}
+  - {fileID: 249049393}
+  m_Father: {fileID: 0}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1165576693
 GameObject:
   m_ObjectHideFlags: 0
@@ -3036,7 +3066,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1016870268}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: 
         m_MethodName: UnPause
         m_Mode: 1
@@ -3505,7 +3535,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1016870268}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: 
         m_MethodName: Restart
         m_Mode: 1

@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class Gravity : MonoBehaviour
 {
-    [SerializeField]
     Board board;
 
     Tetromino activeTetromino;
@@ -30,6 +29,11 @@ public class Gravity : MonoBehaviour
         Gs = 0.015f;
         RecalculateTimers();
         softDroped = false;
+    }
+
+    public void SetBoard(Board board)
+    {
+        this.board = board;
     }
 
     public void SetActiveTetromino(Tetromino tetromino)

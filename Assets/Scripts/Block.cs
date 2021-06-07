@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class Block : MonoBehaviour
 {
-    SpriteRenderer sprite;
     Vector2Int boardPos;
 
     private void Awake()
@@ -20,27 +19,21 @@ public class Block : MonoBehaviour
         set
         {
             boardPos = value;
-            Hide(boardPos.y >= Board.fieldRows);
+            Hide(boardPos.y >= Board.fieldRows); //hide for invis rows
         }
 
     }
-    public void Initiate(Color color, Vector2 pos, Vector2 size, bool hidden = false)
+    public void Initiate(Color color, Vector2 pos, Vector2 size)
     {
-        sprite = GetComponent<SpriteRenderer>();
-
-#if DEBUG
-        Debug.Assert(sprite != null);
-#endif
-
         SetColor(color);
         SetTransformPosition(pos);
         SetBlockSize(size);
-        Hide(hidden);
+        Hide(false);
     }
 
     public void SetColor(Color color)
     {
-        sprite.color = color;
+        GetComponent<SpriteRenderer>().color = color;
     }
 
     public void SetTransformPosition(Vector2 pos)
@@ -61,15 +54,15 @@ public class Block : MonoBehaviour
 
     public void SetBlockSize(Vector2 size)
     {
-        sprite.size = size;
+        GetComponent<SpriteRenderer>().size = size;
     }
 
     public void Hide(bool hide)
     {
         if (hide)
-            sprite.enabled = false;
+            GetComponent<SpriteRenderer>().enabled = false;
         else
-            sprite.enabled = true;
+            GetComponent<SpriteRenderer>().enabled = true;
     }
 
     public void MoveBoardPosition(int x, int y)

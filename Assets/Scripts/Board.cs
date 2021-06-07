@@ -20,9 +20,8 @@ public class Board : MonoBehaviour
     SpriteRenderer boardBackground;
     [SerializeField]
     SpriteRenderer previewBoard;
-    [SerializeField]
+
     UI ui;
-    [SerializeField]
     Sound sound;
 
     static Vector2 blockSize;
@@ -32,31 +31,25 @@ public class Board : MonoBehaviour
 
     Tetromino previewTetromino;
 
-    [SerializeField]
-    TextMeshProUGUI scoreTxt;
-
     public static Vector2 BlockSize { get => blockSize; }
     public int Score { get => score; }
     public int RowsClearedThisLevel { get => rowsClearedThisLevel; }
     public bool GrabNext { get => grabNext; }
+    public UI Ui { get => ui; set => ui = value; }
+    public Sound Sound { get => sound; set => sound = value; }
 
     private void Awake()
     {
         board = new bool[columns , rows];
-
-        BoxCollider2D fieldBox = GetComponent<BoxCollider2D>();
         placedBlocks = new List<Block>();
 
-#if DEBUG 
-        if (fieldBox != null)
-#endif
-        {
-            fieldWorldSpaceSize = new Vector2(fieldBox.size.x * transform.lossyScale.x, fieldBox.size.y * transform.lossyScale.y);
-            blockSize = new Vector2(fieldWorldSpaceSize.x / columns, fieldWorldSpaceSize.y / (rows - 2)); //top 2 rows not in fieldSpace
+        BoxCollider2D fieldBox = GetComponent<BoxCollider2D>();
 
-            fieldBotLeft = new Vector2(transform.position.x - fieldWorldSpaceSize.x / 2 + blockSize.x/2 - fieldBox.offset.x * transform.lossyScale.x, 
-                transform.position.y - fieldWorldSpaceSize.y / 2 + blockSize.y / 2 + fieldBox.offset.y * transform.lossyScale.y); 
-        }
+        fieldWorldSpaceSize = new Vector2(fieldBox.size.x * transform.lossyScale.x, fieldBox.size.y * transform.lossyScale.y); //field dimension = boxcollider dimensions
+        blockSize = new Vector2(fieldWorldSpaceSize.x / columns, fieldWorldSpaceSize.y / (rows - 2)); //top 2 rows not in fieldSpace
+        fieldBotLeft = new Vector2(transform.position.x - fieldWorldSpaceSize.x / 2 + blockSize.x/2 - fieldBox.offset.x * transform.lossyScale.x, 
+            transform.position.y - fieldWorldSpaceSize.y / 2 + blockSize.y / 2 + fieldBox.offset.y * transform.lossyScale.y); 
+        
     }
 
     public bool CheckFieldsTaken(Vector2Int[] fields)
@@ -72,6 +65,8 @@ public class Board : MonoBehaviour
 
     public void PlaceTetromino(Tetromino tetromino)
     { 
+        //adds blocks to placedBlocks, remove tetromino parent, checks for cleared lines
+
         foreach(Block block in tetromino.Blocks)
         {
             board[block.BoardPos.x, block.BoardPos.y] = true;
@@ -86,12 +81,12 @@ public class Board : MonoBehaviour
 
         Destroy(tetromino.gameObject);
 
-        ScoreBoard();
+        ScoreAndClearBoard();
 
         grabNext = true;
     } 
 
-    void ScoreBoard()
+    void ScoreAndClearBoard()
     {
         int clearedRows = 0;
         for(int i = 0; i < fieldRows; ++i)
@@ -136,7 +131,7 @@ public class Board : MonoBehaviour
         {
             sound.PlayClear();
             RearangeRows();
-            scoreTxt.text = score.ToString();
+            ui.ScoreBoardTxt.text = score.ToString();
         }
 
     }
