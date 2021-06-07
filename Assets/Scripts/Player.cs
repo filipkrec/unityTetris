@@ -4,7 +4,8 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
-    public Board board;
+    [SerializeField]
+    Board board;
     bool started = false;
 
     Tetromino activeTetromino;
@@ -12,12 +13,22 @@ public class Player : MonoBehaviour
     Sound sound;
     int currentLevel;
 
+    Vector2 touchPoint;
+    bool spun;
+    bool moved;
+    bool ignoreTouch;
+    int touchSensitivity;
+
     private void Awake()
     {
         currentLevel = 0;
         gravity = GetComponent<Gravity>();
         sound = GetComponent<Sound>();
         Globals.paused = true;
+        touchSensitivity = PlayerPrefs.GetInt("Sensitivity");
+
+        if (touchSensitivity == 0)
+            touchSensitivity = 10;
     }
 
     void StartGame()
@@ -33,13 +44,19 @@ public class Player : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (!started && Input.GetMouseButtonDown(0))
+        if (!started 
+            &&
+#if DEBUG
+            Input.GetMouseButtonDown(0) ||
+#endif
+            Input.touchCount > 0
+            )
             StartGame();
 
         if (Globals.paused)
             return;
 
-        if(board.GrabNext)
+        if (board.GrabNext)
         {
             activeTetromino = board.GetNextTetromino();
             gravity.SetActiveTetromino(activeTetromino);
@@ -50,6 +67,15 @@ public class Player : MonoBehaviour
                 gravity.IncreaseGs();
             }
         }
+        ProcessTouchInput();
+#if DEBUG
+        ProcessPcInput();
+#endif
+    }
+
+#if DEBUG
+    void ProcessPcInput()
+    {
 
         if (Input.GetKeyDown(KeyCode.RightArrow))
         {
@@ -67,7 +93,66 @@ public class Player : MonoBehaviour
         {
             RotateTetrominoRight();
         }
+
     }
+#endif
+
+    void ProcessTouchInput()
+    {
+        if (Input.touchCount > 0)
+        {
+            Touch touch = Input.GetTouch(0);
+            if (touch.phase == TouchPhase.Began)
+            {
+                moved = false;
+                ignoreTouch = false;
+                spun = false;
+                touchPoint = touch.position;
+            }
+            else if (!ignoreTouch)
+            {
+                //Left Right
+                if (Mathf.Abs(touchPoint.x - touch.position.x) > Screen.width / touchSensitivity)
+                {
+                    moved = true;
+                    if (touch.position.x < touchPoint.x)
+                    {
+                        touchPoint.x = touchPoint.x - Screen.width / touchSensitivity;
+                        MoveTetrominoLeft();
+                    }
+                    else
+                    {
+                        touchPoint.x = touch.position.x + Screen.width / touchSensitivity;
+                        MoveTetrominoRight();
+                    }
+                }
+
+                //Rotate
+                if (!spun && !moved && touch.position.y - touchPoint.y > Screen.height / touchSensitivity)
+                {
+                    spun = true;
+                    //move once per 1/6 of the screen, move twice if > 3 moves per sec, move 3 times if over 4 moves per sec
+
+                    if (touch.position.x < Screen.width / 2)
+                    {
+                        RotateTetrominoRight();
+                    }
+                    else
+                    {
+                        RotateTetrominoLeft();
+                    }
+                }
+
+                if(!spun && !moved && touchPoint.y - touch.position.y > Screen.height / touchSensitivity)
+                {
+                    gravity.HardDrop();
+                    ignoreTouch = true;
+                }
+            }
+        }
+
+    }
+
 
     void MoveTetrominoLeft()
     {
@@ -138,5 +223,11 @@ public class Player : MonoBehaviour
             if (gravity.SoftDroped)
                 gravity.ResetSoftDropTimer();
         }
+    }
+
+    public void ChangeTouchSensitivity(int sensitivity)
+    {
+        touchSensitivity = sensitivity;
+        PlayerPrefs.SetInt("Sensitivity", sensitivity);
     }
 }

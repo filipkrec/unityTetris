@@ -4,7 +4,9 @@ using UnityEngine;
 
 public class Gravity : MonoBehaviour
 {
-    public Board board;
+    [SerializeField]
+    Board board;
+
     Tetromino activeTetromino;
 
     float Gs;
@@ -44,39 +46,49 @@ public class Gravity : MonoBehaviour
 
         if (dropTimer > dropTime)
         {
-            dropTimer = 0f;
-            activeTetromino.MoveDown();
-            if (board.CheckFieldsTaken(activeTetromino.getBlockPositions()))
-            {
-                activeTetromino.MoveUp();
-                if (!softDroped)
-                    SoftDrop();
-            }
-            else
-            {
-                activeTetromino.SetPosition();
-                if (softDroped)
-                    softDroped = false;
-            }
+            Drop();
         }
 
         if (softDroped)
         {
-            softDropDelayTimer+= Time.deltaTime;
-            if (softDropDelayTimer > softDropDelay)
+            CheckSoftDrop();
+        }
+    }
+    
+    void Drop()
+    {
+        dropTimer = 0f;
+        activeTetromino.MoveDown();
+        if (board.CheckFieldsTaken(activeTetromino.getBlockPositions()))
+        {
+            activeTetromino.MoveUp();
+            if (!softDroped)
+                SoftDrop();
+        }
+        else
+        {
+            activeTetromino.SetPosition();
+            if (softDroped)
+                softDroped = false;
+        }
+    }
+
+    void CheckSoftDrop()
+    {
+        softDropDelayTimer += Time.deltaTime;
+        if (softDropDelayTimer > softDropDelay)
+        {
+            softDropDelayTimer = 0f;
+            activeTetromino.MoveDown();
+            if (board.CheckFieldsTaken(activeTetromino.getBlockPositions()))
             {
-                softDropDelayTimer = 0f;
-                activeTetromino.MoveDown();
-                if (board.CheckFieldsTaken(activeTetromino.getBlockPositions()))
-                {
-                    activeTetromino.MoveUp();
-                    board.PlaceTetromino(activeTetromino);
-                }
-                else
-                {
-                    activeTetromino.SetPosition();
-                    softDroped = false; 
-                }
+                activeTetromino.MoveUp();
+                board.PlaceTetromino(activeTetromino);
+            }
+            else
+            {
+                activeTetromino.SetPosition();
+                softDroped = false;
             }
         }
     }
@@ -98,7 +110,7 @@ public class Gravity : MonoBehaviour
     {
         dropTime = 1f / (Gs * 60); // G = 1 cell per frame = 1 cell / 60
         softDropDelay = 5 * dropTime;  
-        softDropDelay = softDropDelay > 2f ? 2f : softDropDelay < 0.2f ? 0.2f : softDropDelay; //min 0.2f , max 2f
+        softDropDelay = softDropDelay > 2f ? 1f : softDropDelay < 1f ? 1f : softDropDelay; //min 1f , max 2f
     }
 
     void SoftDrop()

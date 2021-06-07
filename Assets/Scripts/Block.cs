@@ -7,6 +7,13 @@ public class Block : MonoBehaviour
     SpriteRenderer sprite;
     Vector2Int boardPos;
 
+    private void Awake()
+    {
+#if DEBUG
+        Debug.Assert(Mathf.Approximately(transform.localScale.x, 1f) && Mathf.Approximately(transform.localScale.y, 1f), "Do not change block scale");
+#endif
+    }
+
     public Vector2Int BoardPos
     {
         get => boardPos;

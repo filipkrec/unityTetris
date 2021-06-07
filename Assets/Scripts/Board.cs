@@ -14,11 +14,16 @@ public class Board : MonoBehaviour
     int rowsClearedThisLevel;
     bool grabNext;
 
-    public List<Tetromino> tetrominoPrefabs;
-    public SpriteRenderer boardBackground;
-    public SpriteRenderer previewBoard;
-    public UI ui;
-    public Sound sound;
+    [SerializeField]
+    List<Tetromino> tetrominoPrefabs;
+    [SerializeField]
+    SpriteRenderer boardBackground;
+    [SerializeField]
+    SpriteRenderer previewBoard;
+    [SerializeField]
+    UI ui;
+    [SerializeField]
+    Sound sound;
 
     static Vector2 blockSize;
     Vector2 fieldWorldSpaceSize;
@@ -27,7 +32,8 @@ public class Board : MonoBehaviour
 
     Tetromino previewTetromino;
 
-    public TextMeshProUGUI scoreTxt;
+    [SerializeField]
+    TextMeshProUGUI scoreTxt;
 
     public static Vector2 BlockSize { get => blockSize; }
     public int Score { get => score; }

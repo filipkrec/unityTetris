@@ -7,19 +7,29 @@ using TMPro;
 
 public class UI : MonoBehaviour
 {
-    public GameObject start;
-    public GameObject pause;
-    public GameObject gameOver;
-    public GameObject pauseBtn;
+    [SerializeField]
+    GameObject start;
+    [SerializeField]
+    GameObject pause;
+    [SerializeField]
+    GameObject gameOver;
+    [SerializeField]
+    GameObject pauseBtn;
     bool muted;
 
-    public Image muteBtn;
-    public Sprite muteSprite;
-    public Sprite unmuteSprite;
-    public Sound sound;
+    [SerializeField]
+    Image muteBtn;
+    [SerializeField]
+    Sprite muteSprite;
+    [SerializeField]
+    Sprite unmuteSprite;
+    [SerializeField]
+    Sound sound;
 
-    public TextMeshProUGUI highScoreText;
-    public TextMeshProUGUI scoreTxt;
+    [SerializeField]
+    TextMeshProUGUI highScoreText;
+    [SerializeField]
+    TextMeshProUGUI scoreTxt;
 
     private void Awake()
     {

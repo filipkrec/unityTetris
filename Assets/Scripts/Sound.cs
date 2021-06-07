@@ -4,14 +4,23 @@ using UnityEngine;
 
 public class Sound : MonoBehaviour
 {
+    [SerializeField]
     public AudioClip BGM;
+    [SerializeField]
     public AudioClip move;
+    [SerializeField]
     public AudioClip error;
+    [SerializeField]
     public AudioClip drop;
+    [SerializeField]
     public AudioClip clear;
+    [SerializeField]
     public AudioClip lose;
+    [SerializeField]
     public AudioSource BGMsource;
+    [SerializeField]
     public AudioSource SFXsource1;
+    [SerializeField]
     public AudioSource clearSource;
 
     private void Awake()

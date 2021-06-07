@@ -4,13 +4,15 @@ using UnityEngine;
 
 public class Tetromino : MonoBehaviour
 {
-    public enum TetrominoShape
+    enum TetrominoShape
     {
         I, J, L, O, S, T, Z
     }
 
-    public TetrominoShape tetrominoShape;
-    public Color color;
+    [SerializeField]
+    TetrominoShape tetrominoShape;
+    [SerializeField]
+    Color color;
     Vector2Int position;
     Vector2 originPos;
     bool[,] blockMatrix;
