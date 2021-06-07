@@ -225,9 +225,9 @@ public class Player : MonoBehaviour
         }
     }
 
-    public void ChangeTouchSensitivity(int sensitivity)
+    public void ChangeTouchSensitivity(System.Single sensitivity)
     {
-        touchSensitivity = sensitivity;
-        PlayerPrefs.SetInt("Sensitivity", sensitivity);
+        touchSensitivity = (int)sensitivity;
+        PlayerPrefs.SetInt("Sensitivity", touchSensitivity);
     }
 }
