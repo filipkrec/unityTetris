@@ -74,7 +74,10 @@ public class Board : MonoBehaviour
             placedBlocks.Add(block);
 
             if (block.BoardPos.y >= 20) //igra treba završiti kada se u 21. redu nalazi kvadrat tetrominoa koji je završio s padanjem  
+            {
                 Lose();
+                break;
+            }
         }
 
         sound.PlayDrop();
