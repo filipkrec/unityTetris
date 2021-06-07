@@ -127,7 +127,7 @@ public class Player : MonoBehaviour
                 if (!moved && !rotated) //1 rotate per touch
                     TouchRotate(touch);
 
-                else if (!moved && !rotated) //dont drop on move/rotate touch
+                if (!moved && !rotated) //dont drop on move/rotate touch
                     TouchDrop(touch);
             }
         }
