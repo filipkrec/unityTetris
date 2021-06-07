@@ -15,6 +15,8 @@ public class UI : MonoBehaviour
     GameObject gameOver;
     [SerializeField]
     GameObject pauseBtn;
+    [SerializeField]
+    Slider sensitivitySlider;
 
     [SerializeField]
     TextMeshProUGUI scoreBoardTxt;
@@ -69,6 +71,8 @@ public class UI : MonoBehaviour
         Globals.paused = true;
         pause.SetActive(true);
         pauseBtn.SetActive(false);
+
+        sensitivitySlider.value = sensitivity;
     }
 
     public void UnPause()

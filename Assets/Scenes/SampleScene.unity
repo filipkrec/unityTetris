@@ -914,8 +914,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: 
+      - m_Target: {fileID: 1156918884}
+        m_TargetAssemblyTypeName: UI, Assembly-CSharp
         m_MethodName: Pause
         m_Mode: 1
         m_Arguments:
@@ -1046,8 +1046,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: 
+      - m_Target: {fileID: 1156918884}
+        m_TargetAssemblyTypeName: UI, Assembly-CSharp
         m_MethodName: Restart
         m_Mode: 1
         m_Arguments:
@@ -1574,9 +1574,9 @@ MonoBehaviour:
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1016870264}
-        m_TargetAssemblyTypeName: Player, Assembly-CSharp
-        m_MethodName: ChangeTouchSensitivity
+      - m_Target: {fileID: 1156918884}
+        m_TargetAssemblyTypeName: UI, Assembly-CSharp
+        m_MethodName: SetTouchSensitivity
         m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1734,8 +1734,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: 
+      - m_Target: {fileID: 1156918884}
+        m_TargetAssemblyTypeName: UI, Assembly-CSharp
         m_MethodName: ToggleMute
         m_Mode: 1
         m_Arguments:
@@ -2036,6 +2036,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   board: {fileID: 433981294}
+  ui: {fileID: 1156918884}
 --- !u!114 &1016870265
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2629,7 +2630,8 @@ MonoBehaviour:
   pause: {fileID: 1256187737}
   gameOver: {fileID: 1355733088}
   pauseBtn: {fileID: 253851497}
-  scoreBoardTxt: {fileID: 0}
+  sensitivitySlider: {fileID: 581263700}
+  scoreBoardTxt: {fileID: 1756409087}
   muteBtn: {fileID: 856486695}
   muteSprite: {fileID: 21300000, guid: a5e5f4f9a0bcf0e46ab2e1f7b07dba40, type: 3}
   unmuteSprite: {fileID: 21300000, guid: 1b560ef6c011b084a910f3a3c6b30e27, type: 3}
@@ -3066,8 +3068,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: 
+      - m_Target: {fileID: 1156918884}
+        m_TargetAssemblyTypeName: UI, Assembly-CSharp
         m_MethodName: UnPause
         m_Mode: 1
         m_Arguments:
@@ -3535,8 +3537,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: 
+      - m_Target: {fileID: 1156918884}
+        m_TargetAssemblyTypeName: UI, Assembly-CSharp
         m_MethodName: Restart
         m_Mode: 1
         m_Arguments:
